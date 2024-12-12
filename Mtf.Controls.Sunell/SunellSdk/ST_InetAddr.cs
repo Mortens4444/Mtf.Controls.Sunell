@@ -5,7 +5,7 @@ namespace Mtf.Controls.Sunell.SunellSdk
     /// <summary>
     /// Represents an IP address.
     /// </summary>
-    [StructLayout(LayoutKind.Auto, CharSet = CharSet.Ansi, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
     public struct ST_InetAddr
     {
         /// <summary>

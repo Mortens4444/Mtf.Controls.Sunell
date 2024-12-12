@@ -3,7 +3,9 @@ using Mtf.Controls.Sunell.SunellSdk;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace Mtf.Controls.Sunell
@@ -33,6 +35,8 @@ namespace Mtf.Controls.Sunell
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             UpdateStyles();
             BackgroundImage = Properties.Resources.NoSignal;
+            BackgroundImageLayout = ImageLayout.Stretch;
+            SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
         protected override void Dispose(bool disposing)
@@ -68,7 +72,7 @@ namespace Mtf.Controls.Sunell
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsConnected { get; set; }
 
-        public void Connect(string cameraIp, ushort cameraPort, string username, string password)
+        public void Connect(string cameraIp = "192.168.0.120", ushort cameraPort = 30001, string username = "admin", string password = "admin")
         {
             var deviceInfo = new ST_DeviceInfo
             {
@@ -84,29 +88,21 @@ namespace Mtf.Controls.Sunell
 
             const int transferProtocol = 2;
             var returnCode = NvdcDll.Remote_Nvd_Init(ref nvdHandle, ref deviceInfo, transferProtocol);
+            CheckForError(returnCode);
 
-            if ((returnCode == 0) && NvdcDll.NvdSdk_Is_Handle_Valid(nvdHandle))
+            if (NvdcDll.NvdSdk_Is_Handle_Valid(nvdHandle))
             {
                 _ = NvdcDll.Remote_LivePlayer2_SetAutoConnectFlag(nvdHandle, true);
                 _ = NvdcDll.Remote_LivePlayer2_SetDefaultStreamId(nvdHandle, 1);
 
                 returnCode = NvdcDll.Remote_LivePlayer2_Open(nvdHandle, 1);
-                if (SetLastError(returnCode))
-                {
-                    return;
-                }
+                CheckForError(returnCode);
 
                 returnCode = NvdcDll.Remote_LivePlayer2_SetNotifyWindow(nvdHandle, Handle, WM_LIVEPLAY_MESSAGE, IntPtr.Zero);
-                if (SetLastError(returnCode))
-                {
-                    return;
-                }
+                CheckForError(returnCode);
 
                 returnCode = NvdcDll.Remote_LivePlayer2_SetVideoWindow(nvdHandle, Handle, 0, 0, Width, Height);
-                if (SetLastError(returnCode))
-                {
-                    return;
-                }
+                CheckForError(returnCode);
 
                 // Connect with old camera
                 returnCode = NvdcDll.Remote_LivePlayer2_Play(nvdHandle);
@@ -120,10 +116,7 @@ namespace Mtf.Controls.Sunell
                     sunellVersion = SunellVersion.SN_IPR57_41APDN_Z;
 
                     returnCode = NvdcNetSDK.SDK_Init();
-                    if (SetLastError(returnCode))
-                    {
-                        return;
-                    }
+                    CheckForError(returnCode);
 
                     var deviceInfoEx = new ST_DeviceInfoExNetSdk
                     {
@@ -142,16 +135,10 @@ namespace Mtf.Controls.Sunell
                     };
 
                     returnCode = NvdcNetSDK.SDK_Login(ref nvdHandle, ref deviceInfoEx, 10000);
-                    if (SetLastError(returnCode))
-                    {
-                        return;
-                    }
+                    CheckForError(returnCode);
 
                     returnCode = NvdcNetSDK.SDK_RemoteLivePlayer_SetNotifyWindow(nvdHandle, Handle, WM_LIVEPLAY_MESSAGE, IntPtr.Zero);
-                    if (SetLastError(returnCode))
-                    {
-                        return;
-                    }
+                    CheckForError(returnCode);
 
                     var stLiveViewPreviewInfo = new ST_LiveVideoPreviewInfo
                     {
@@ -165,30 +152,20 @@ namespace Mtf.Controls.Sunell
 
                     var livePlayerHandle = new IntPtr();
                     returnCode = NvdcNetSDK.SDK_RemoteLivePlayer_Open(nvdHandle, stLiveViewPreviewInfo, ref livePlayerHandle);
-                    if (SetLastError(returnCode))
-                    {
-                        return;
-                    }
+                    CheckForError(returnCode);
 
                     returnCode = NvdcNetSDK.SDK_RemoteLivePlayer_SetRealtimeMode(livePlayerHandle, RealtimeMode.RealTime);
-                    if (SetLastError(returnCode))
-                    {
-                        return;
-                    }
+                    CheckForError(returnCode);
 
                     returnCode = NvdcNetSDK.SDK_RemoteLivePlayer_Play(nvdHandle); //livePlayerHandle);
                 }
 
-                if (SetLastError(returnCode))
-                {
-                    return;
-                }
-
+                CheckForError(returnCode);
                 IsConnected = true;
             }
             else
             {
-                _ = SetLastError(returnCode);
+                throw new InvalidOperationException("The handle is not valid.");
             }
             RefreshImage();
         }
@@ -198,7 +175,7 @@ namespace Mtf.Controls.Sunell
             _ = NvdcDll.Remote_LivePlayer2_Close(nvdHandle);
             _ = NvdcDll.Remote_Nvd_UnInit(nvdHandle);
             IsConnected = false;
-            Invoke((Action)(() => { Invalidate(); }));
+            //Invoke((Action)(() => { Invalidate(); }));
         }
 
         public int PTZ_Open(int cameraId)
@@ -296,19 +273,19 @@ namespace Mtf.Controls.Sunell
             if (!String.IsNullOrEmpty(OverlayText))
             {
                 var graphics = e.Graphics;
-                //_ = graphics.MeasureString(OverlayText, OverlayFont);
-                graphics.DrawString(OverlayText, OverlayFont, OverlayBrush, OverlayLocation);
+                {
+                    //_ = graphics.MeasureString(OverlayText, OverlayFont);
+                    graphics.DrawString(OverlayText, OverlayFont, OverlayBrush, OverlayLocation);
+                }
             }
         }
 
-        private bool SetLastError(int errorCode)
+        private void CheckForError(int errorCode, [CallerMemberName] string callerFunction = "", [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0)
         {
-            var result = errorCode != 0;
-            if (result)
+            if (errorCode != 0)
             {
-                Text = messageFormatters[sunellVersion](errorCode);
+                throw new AggregateException($"ErrorCode: {errorCode}, {callerFunction} in {callerFile}, line {callerLine}", new InvalidOperationException(messageFormatters[sunellVersion](errorCode)));
             }
-            return result;
         }
     }
 }
