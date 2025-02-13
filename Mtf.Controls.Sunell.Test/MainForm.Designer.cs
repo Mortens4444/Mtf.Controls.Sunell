@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            sunellVideoWindow = new SunellVideoWindowLegacy();
+            sunellVideoWindow = new SunellVideoWindow();
             btnConnect = new Button();
             btnDisconnect = new Button();
             ((System.ComponentModel.ISupportInitialize)sunellVideoWindow).BeginInit();
@@ -45,7 +45,7 @@
             sunellVideoWindow.OverlayFont = new Font("Arial", 32F, FontStyle.Bold);
             sunellVideoWindow.OverlayLocation = new Point(10, 10);
             sunellVideoWindow.OverlayText = "";
-            sunellVideoWindow.Size = new Size(796, 407);
+            sunellVideoWindow.Size = new Size(796, 410);
             sunellVideoWindow.SizeMode = PictureBoxSizeMode.StretchImage;
             sunellVideoWindow.TabIndex = 0;
             sunellVideoWindow.TabStop = false;
@@ -90,7 +90,7 @@
 
         #endregion
 
-        private SunellVideoWindowLegacy sunellVideoWindow;
+        private SunellVideoWindow sunellVideoWindow;
         private Button btnConnect;
         private Button btnDisconnect;
     }
