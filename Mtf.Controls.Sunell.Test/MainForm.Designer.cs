@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            sunellVideoWindow = new SunellVideoWindow();
+            sunellVideoWindow = new SunellVideoWindowLegacy();
             btnConnect = new Button();
             btnDisconnect = new Button();
             ((System.ComponentModel.ISupportInitialize)sunellVideoWindow).BeginInit();
@@ -82,13 +82,15 @@
             Controls.Add(sunellVideoWindow);
             Name = "MainForm";
             Text = "MainForm";
+            FormClosing += MainForm_FormClosing;
+            Shown += MainForm_Shown;
             ((System.ComponentModel.ISupportInitialize)sunellVideoWindow).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private SunellVideoWindow sunellVideoWindow;
+        private SunellVideoWindowLegacy sunellVideoWindow;
         private Button btnConnect;
         private Button btnDisconnect;
     }

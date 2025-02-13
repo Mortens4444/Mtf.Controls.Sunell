@@ -13,7 +13,7 @@ namespace Mtf.Controls.Sunell.Test
         {
             try
             {
-                sunellVideoWindow.Connect("192.168.0.120", 30001, "admin", "admin");
+                sunellVideoWindow.Connect("192.168.0.201", 30001, "admin", "Tibi2025");
             }
             catch (Exception ex)
             {
@@ -27,6 +27,16 @@ namespace Mtf.Controls.Sunell.Test
             {
                 sunellVideoWindow.Disconnect();
             }
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            btnConnect.PerformClick();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            btnDisconnect.PerformClick();
         }
     }
 }

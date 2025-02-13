@@ -1,9 +1,7 @@
 ﻿using Mtf.Controls.Sunell.CustomEventArgs;
 using Mtf.Controls.Sunell.SunellSdk;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
@@ -11,8 +9,8 @@ using System.Windows.Forms;
 namespace Mtf.Controls.Sunell
 {
     [ToolboxItem(true)]
-    [ToolboxBitmap(typeof(SunellVideoWindow), "Resources.VideoSource.png")]
-    public class SunellVideoWindow : PictureBox
+    [ToolboxBitmap(typeof(SunellVideoWindowLegacy), "Resources.VideoSource.png")]
+    public class SunellVideoWindowLegacy : PictureBox
     {
         private IntPtr nvdHandle = IntPtr.Zero;
 
@@ -21,16 +19,9 @@ namespace Mtf.Controls.Sunell
 
         public delegate void VideoSignalChangedEventHandler(object sender, VideoSignalChangedEventArgs e);
 
-        private SunellVersion sunellVersion = SunellVersion.SN_IPR56_41APDN_M;
-        private readonly Dictionary<SunellVersion, Func<int, string>> messageFormatters = new Dictionary<SunellVersion, Func<int, string>>
-            {
-                { SunellVersion.SN_IPR56_41APDN_M, NvdcDll.GetErrorMessage },
-                { SunellVersion.SN_IPR57_41APDN_Z, NvdcNetSDK.GetErrorMessage }
-            };
-
         public event VideoSignalChangedEventHandler VideoSignalChanged;
 
-        public SunellVideoWindow()
+        public SunellVideoWindowLegacy()
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             UpdateStyles();
@@ -104,63 +95,10 @@ namespace Mtf.Controls.Sunell
                 returnCode = NvdcDll.Remote_LivePlayer2_SetVideoWindow(nvdHandle, Handle, 0, 0, Width, Height);
                 CheckForError(returnCode);
 
-                // Connect with old camera
                 returnCode = NvdcDll.Remote_LivePlayer2_Play(nvdHandle);
-
-                if (returnCode == -503)
-                {
-                    Disconnect();
-                    nvdHandle = IntPtr.Zero;
-
-                    // Connect with new camera
-                    sunellVersion = SunellVersion.SN_IPR57_41APDN_Z;
-
-                    returnCode = NvdcNetSDK.SDK_Init();
-                    CheckForError(returnCode);
-
-                    var deviceInfoEx = new ST_DeviceInfoExNetSdk
-                    {
-                        szUserID = deviceInfo.UserID,
-                        szPassword = deviceInfo.Password,
-                        szDeviceName = deviceInfo.DeviceName,
-                        szDeviceID = deviceInfo.DeviceID,
-                        stInetAddr = new ST_DeviceInfoExNetSdk.ST_InetAddr
-                        {
-                            nIPProtoVer = deviceInfo.InetAddr.IPProtocolVersion,
-                            nPORT = deviceInfo.InetAddr.Port,
-                            szHostIP = deviceInfo.InetAddr.HostIP
-                        },
-                        nDeviceType = deviceInfo.DeviceType,
-                        m_bRouterMappingEnableFlag = false
-                    };
-
-                    returnCode = NvdcNetSDK.SDK_Login(ref nvdHandle, ref deviceInfoEx, 10000);
-                    CheckForError(returnCode);
-
-                    returnCode = NvdcNetSDK.SDK_RemoteLivePlayer_SetNotifyWindow(nvdHandle, Handle, WM_LIVEPLAY_MESSAGE, IntPtr.Zero);
-                    CheckForError(returnCode);
-
-                    var stLiveViewPreviewInfo = new ST_LiveVideoPreviewInfo
-                    {
-                        bAutoConnectFlag = true,
-                        bStretchMode = true,
-                        nCameraId = 1,
-                        nDisplayWnd = 0,
-                        nStreamId = 1,
-                        nTransferProtocol = 2
-                    };
-
-                    var livePlayerHandle = new IntPtr();
-                    returnCode = NvdcNetSDK.SDK_RemoteLivePlayer_Open(nvdHandle, stLiveViewPreviewInfo, ref livePlayerHandle);
-                    CheckForError(returnCode);
-
-                    returnCode = NvdcNetSDK.SDK_RemoteLivePlayer_SetRealtimeMode(livePlayerHandle, RealtimeMode.RealTime);
-                    CheckForError(returnCode);
-
-                    returnCode = NvdcNetSDK.SDK_RemoteLivePlayer_Play(nvdHandle); //livePlayerHandle);
-                }
-
                 CheckForError(returnCode);
+
+                BackgroundImage = null;
                 IsConnected = true;
             }
             else
@@ -175,6 +113,7 @@ namespace Mtf.Controls.Sunell
             _ = NvdcDll.Remote_LivePlayer2_Close(nvdHandle);
             _ = NvdcDll.Remote_Nvd_UnInit(nvdHandle);
             IsConnected = false;
+            BackgroundImage = Properties.Resources.NoSignal;
             //Invoke((Action)(() => { Invalidate(); }));
         }
 
@@ -284,7 +223,7 @@ namespace Mtf.Controls.Sunell
         {
             if (errorCode != 0)
             {
-                throw new AggregateException($"ErrorCode: {errorCode}, {callerFunction} in {callerFile}, line {callerLine}", new InvalidOperationException(messageFormatters[sunellVersion](errorCode)));
+                throw new AggregateException($"ErrorCode: {errorCode}, {callerFunction} in {callerFile}, line {callerLine}", new InvalidOperationException(NvdcDll.GetErrorMessage(errorCode)));
             }
         }
     }
