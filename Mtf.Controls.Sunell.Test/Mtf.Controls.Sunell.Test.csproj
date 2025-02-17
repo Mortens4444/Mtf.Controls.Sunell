@@ -11,12 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FFmpeg.AutoGen" Version="7.0.0" />
     <PackageReference Include="Mtf.MessageBoxes" Version="3.0.31" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mtf.Controls.Sunell\Mtf.Controls.Sunell.csproj" />
+    <ProjectReference Include="..\Mtf.Controls.Sunell.IPR66\Mtf.Controls.Sunell.IPR66.csproj" />
+    <ProjectReference Include="..\Mtf.Controls.Sunell.IPR67\Mtf.Controls.Sunell.IPR67.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-using Mtf.Controls.Sunell.SunellSdk;
+using Mtf.Controls.Sunell.IPR67.SunellSdk;
 
 namespace Mtf.Controls.Sunell.Test
 {
@@ -15,7 +15,8 @@ namespace Mtf.Controls.Sunell.Test
             ApplicationConfiguration.Initialize();
 
             _ = Sdk.sdk_dev_init(null);
-            Application.Run(new MainForm());
+            Application.Run(new MainFormLegacy());
+            //Application.Run(new MainForm());
             Sdk.sdk_dev_quit();
         }
     }

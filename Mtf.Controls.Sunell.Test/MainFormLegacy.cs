@@ -1,4 +1,3 @@
-using Mtf.Controls.Sunell.SunellSdk;
 using Mtf.MessageBoxes;
 
 namespace Mtf.Controls.Sunell.Test

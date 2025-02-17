@@ -1,4 +1,6 @@
-﻿namespace Mtf.Controls.Sunell.Test
+﻿using Mtf.Controls.Sunell.IPR66;
+
+namespace Mtf.Controls.Sunell.Test
 {
     partial class MainFormLegacy
     {

@@ -1,4 +1,6 @@
-﻿namespace Mtf.Controls.Sunell.Test
+﻿using Mtf.Controls.Sunell.IPR67;
+
+namespace Mtf.Controls.Sunell.Test
 {
     partial class MainForm
     {
