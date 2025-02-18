@@ -26,9 +26,34 @@
     </dependencies>
   </metadata>
   <files>
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net481\Mtf.Controls.Sunell.IPR66.dll" target="lib\net481" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net8.0-windows\Mtf.Controls.Sunell.IPR66.dll" target="lib\net8.0-windows7" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\Mtf.Controls.Sunell.IPR66.dll" target="lib\net9.0-windows7" />
+	
+	    <!-- .NET Framework 4.8.1 -->
     <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net481\**" target="lib\net481" />
-    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net8.0-windows\**" target="lib\net8.0-windows7" />
-    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\**" target="lib\net9.0-windows7" />
+	
+    <!-- Natív DLL-ek net481-es célcsoporthoz (egyenként felsorolva, így a lib mappából ki vannak zárva) -->
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\atl80.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\mfc80.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\mfc80u.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\mfcm80u.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\msvcm80.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\msvcp80.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\msvcr80.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\NvdaiDll.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\NvdaiDll_D.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\NvdalDll.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\NvdalDll_D.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\NvdcDll.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\Nvdcdll_D.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\NvdcNetSDK.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\NvdcPlayerDll.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\NvdcPlayerDll_D.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\SensorUI.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\SensorUI_D.dll" target="runtimes\win-x86\native" />
+    <file src=".\Mtf.Controls.Sunell.IPR66\bin\Release\net9.0-windows\vcomp.dll" target="runtimes\win-x86\native" />
+
 	<file src=".\ReadMe.md" target="docs\" />
   </files>
 </package>
